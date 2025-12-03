@@ -100,7 +100,7 @@ class MemberService {
         memberPoints: { $gte: 1 },
       })
       .sort({ memberPoints: "asc" })
-      .limit(4)
+      .limit(8)
       .exec();
 
     if (!result.length)

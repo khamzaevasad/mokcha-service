@@ -1,3 +1,4 @@
+import cors from "cors";
 import express from "express";
 import path from "path";
 import morgan from "morgan";
@@ -13,8 +14,9 @@ const app = express();
 // entrees
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/uploads", express.static("./uploads"));
-app.use(express.urlencoded({ extended: true })); //traditional api support
-app.use(express.json()); // rest api support
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser());
 app.use(morgan(MORGAN_FORMAT));
 
