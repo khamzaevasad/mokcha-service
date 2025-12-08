@@ -92,6 +92,34 @@ class ProductService {
     return result;
   }
 
+  // getRecommendedProducts
+  public async getRecommendedProducts(id: string): Promise<Product[]> {
+    const productId = shapeIntoMongooseObjectId(id);
+    const collection = await this.productModel.findById(productId).exec();
+    if (!collection)
+      throw new Errors(HttpCode.NOT_FOUND, Message.NO_DATA_FOUND);
+
+    let recommended = await this.productModel
+      .find({
+        productCollection: collection.productCollection,
+        _id: { $ne: collection._id },
+      })
+      .limit(4)
+      .exec();
+
+    if (recommended.length < 4) {
+      const extra = await this.productModel
+        .find({ _id: { $ne: collection._id } })
+        .sort({ productViews: -1 })
+        .limit(4 - recommended.length)
+        .exec();
+
+      recommended.push(...extra);
+    }
+
+    return recommended;
+  }
+
   // SSR
   public getAllProducts = async (): Promise<Product[]> => {
     const result = await this.productModel.find().exec();

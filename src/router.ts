@@ -38,6 +38,10 @@ router.get(
   productController.getProduct
 );
 
+router.get(
+  "/product/:id/recommended",
+  productController.getRecommendedProducts
+);
 /** Order **/
 
 router.post(
