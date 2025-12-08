@@ -43,12 +43,30 @@ productController.getProduct = async (req: ExtendedRequest, res: Response) => {
   try {
     logger.info("getProduct");
     const { id } = req.params;
+    console.log("id", id);
     const memberId = req.member?._id ?? null;
     console.log("reqMember", req.member);
     const result = await productService.getProduct(memberId, id);
     res.status(HttpCode.OK).json(result);
   } catch (err) {
     logger.error("Error getProduct", err);
+    if (err instanceof Errors) res.status(err.code).json(err);
+    else res.status(Errors.standard.code).json(Errors.standard);
+  }
+};
+
+// getRecommendedProducts
+productController.getRecommendedProducts = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    logger.info("getRecommendedProducts");
+    const paramsId = req.params.id;
+    const result = await productService.getRecommendedProducts(paramsId);
+    res.status(HttpCode.OK).json(result);
+  } catch (err) {
+    logger.error("Error getRecommendedProducts", err);
     if (err instanceof Errors) res.status(err.code).json(err);
     else res.status(Errors.standard.code).json(Errors.standard);
   }
