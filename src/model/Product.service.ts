@@ -28,7 +28,7 @@ class ProductService {
 
   // getProducts
   public async getProducts(inquiry: ProductInquiry): Promise<Product[]> {
-    const match: T = { productStatus: ProductStatus.PAUSE };
+    const match: T = { productStatus: ProductStatus.PROCESS };
 
     if (inquiry.productCollection)
       match.productCollection = inquiry.productCollection;
@@ -62,7 +62,7 @@ class ProductService {
     const productId = shapeIntoMongooseObjectId(id);
 
     let result = await this.productModel
-      .findOne({ _id: productId, productStatus: ProductStatus.PAUSE })
+      .findOne({ _id: productId, productStatus: ProductStatus.PROCESS })
       .exec();
     if (!result) throw new Errors(HttpCode.NOT_FOUND, Message.NO_DATA_FOUND);
 
