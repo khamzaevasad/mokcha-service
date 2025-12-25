@@ -103,8 +103,7 @@ class MemberService {
       .limit(8)
       .exec();
 
-    if (!result.length)
-      throw new Errors(HttpCode.NOT_MODIFIED, Message.NO_DATA_FOUND);
+    if (!result) throw new Errors(HttpCode.NOT_MODIFIED, Message.NO_DATA_FOUND);
 
     return result;
   }
@@ -188,7 +187,7 @@ class MemberService {
     const result = await this.memberModel
       .findByIdAndUpdate({ _id: input._id }, input, { new: true })
       .exec();
-    if (!input) throw new Errors(HttpCode.NOT_MODIFIED, Message.UPDATE_FAILED);
+    if (!result) throw new Errors(HttpCode.NOT_MODIFIED, Message.UPDATE_FAILED);
     return result;
   }
 }
