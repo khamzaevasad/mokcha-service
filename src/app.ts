@@ -10,6 +10,8 @@ import ConnectMongoDBSession from "connect-mongodb-session";
 import session from "express-session";
 import { T } from "./libs/types/common";
 const app = express();
+import { Server as SocketIOServer } from "socket.io";
+import http from "http";
 
 // entrees
 app.use(express.static(path.join(__dirname, "public")));
@@ -37,7 +39,7 @@ app.use(
     store: store,
     resave: true,
     saveUninitialized: true,
-  })
+  }),
 );
 
 app.use(function (req, res, next) {
@@ -54,4 +56,23 @@ app.set("view engine", "ejs");
 app.use("/admin", routerAdmin); // SSR
 app.use("/", router); // React
 
-export default app;
+const server = http.createServer(app);
+const io = new SocketIOServer(server, {
+  cors: {
+    origin: true,
+    credentials: true,
+  },
+});
+
+let summaryClient = 0;
+io.on("connection", (socket) => {
+  summaryClient++;
+  console.log(`connection & total [${summaryClient}] `);
+
+  socket.on("disconnect", () => {
+    summaryClient--;
+    console.log(`disconnect & total [${summaryClient}] `);
+  });
+});
+
+export default server;
